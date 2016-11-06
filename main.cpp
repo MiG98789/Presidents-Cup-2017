@@ -1,11 +1,19 @@
 //main.cpp
 
+/*
+*TODO:
+*More tuning required
+*
+*/
+
+//---Standard C++ header files---//
 #include <iostream>
 #include <cstdio>
 #include <cmath>
 #include <ctime>
 #include <vector>
 
+//---OpenCV header files---//
 #include <opencv\cv.h>
 #include <opencv\highgui.h>
 #include <opencv2\objdetect\objdetect.hpp>
@@ -15,33 +23,36 @@
 int main(int argc, char** argv)
 {
 	//---Timer---//
-	std::clock_t start = std::clock();
-	double timer_interval = 0.5;
+	std::clock_t start = std::clock();	//Time of the last frame shot
+	const double timer_interval = 10;	//Time between every shot (in seconds)
+	double time_elapsed = 0;	//Time difference between current time and time of last frame shot
 
 	//---Haar cascades---//
-	cv::CascadeClassifier face_cascade, eye_cascade;
+	cv::CascadeClassifier face_cascade;	//Haar cascade classifier for face
+	cv::CascadeClassifier eye_cascade;	//Haar cascade classifier for eyes
 
-	if (!face_cascade.load("./haarcascades/haarcascade_frontalface_alt2.xml"))
+	if (!face_cascade.load("./haarcascades/haarcascade_frontalface_alt.xml"))
 	{
 		std::cerr << "ERROR: cannot cascade file for face";
-		return 1;
+		return 100;
 	}
 
 	if (!eye_cascade.load("./haarcascades/haarcascade_eye.xml"))
 	{
 		std::cerr << "ERROR: cannot load cascade file for eyes";
-		return 1;
+		return 101;
 	}
 
 	//---Webcam---//
-	cv::VideoCapture capture(0); //-1, 0, 1 device id
+	cv::VideoCapture capture(0); //0 for default camera
 	if (!capture.isOpened())
 	{
 		std::cerr << "ERROR: Cannot initialise camera";
-		return 1;
+		return 200;
 	}
+	capture.set(CV_CAP_PROP_BUFFERSIZE, 1); //Set how many frames the buffer will store
 
-	cv::Mat cap_img, gray_img;
+	cv::Mat cap_img, gray_img;	//Image matrices
 	std::vector<cv::Rect> faces, eyes;
 
 	while (true)
@@ -49,7 +60,9 @@ int main(int argc, char** argv)
 		if (cv::waitKey(1) == 27) //Press esc to exit
 			break;
 
-		if ((std::clock() - start) / (double) CLOCKS_PER_SEC > timer_interval)
+		time_elapsed = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+
+		if (time_elapsed > timer_interval)
 		{
 			capture >> cap_img;
 			cvtColor(cap_img, gray_img, CV_BGR2GRAY);
@@ -71,7 +84,7 @@ int main(int argc, char** argv)
 			}
 			imshow("Result", cap_img);
 
-			start = std::clock();
+			start = std::clock(); //Reset comparison time for timer
 		}
 	}
 	
