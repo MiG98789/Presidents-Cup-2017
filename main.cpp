@@ -7,24 +7,7 @@ Make functions and cpp/h files
 check http://stackoverflow.com/questions/19321804/this-function-or-variable-may-be-unsafe-visual-studio about std::localtime() vs std::localtime_s()
 */
 
-#pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
-
-//---Standard C++ header files---//
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <cstdio>
-#include <cmath>
-#include <ctime>
-#include <algorithm>
-#include <vector>
-
-//---OpenCV header files---//
-#include <opencv\cv.h>
-#include <opencv\highgui.h>
-#include <opencv2\objdetect\objdetect.hpp>
-#include <opencv2\highgui\highgui.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
+#include "main.h"
 
 int main(int argc, char** argv)
 {
@@ -97,8 +80,9 @@ int main(int argc, char** argv)
 	std::transform(courseCode.begin(), courseCode.end(), courseCode.begin(), ::tolower);	//Make course code lowercase
 
 	//---Output file---//
-	std::string file = tString + "-" + courseCode + ".cvs";
+	std::string file = tString + "-" + courseCode + ".csv";
 	std::ofstream ofs(file);	//Output file stream, data format: seconds since start of lecture, results\n
+	ofs << tString << "-" << courseCode << "\n";
 
 	//---Frame information---//
 	cv::Mat frame;	//Captured frame
@@ -108,7 +92,7 @@ int main(int argc, char** argv)
 
 	while (true)
 	{
-		if (cv::waitKey(1) == 27) //Press esc to exit
+		if (cv::waitKey(1) == ESC) //Press esc to exit
 			break;
 
 		timerDuration = (std::clock() - timerPrev) / (double)CLOCKS_PER_SEC;
