@@ -149,8 +149,8 @@ int main(int argc, char** argv) {
 
 			//---Loop through each face---//
 			int numFaces = faces.size();
-			Mat frameAllNormalizedFaces = Mat::zeros(150, 150 * MAX_FACES_PER_ROW, CV_8UC3);
-			Mat frameRowNormalizedFaces = Mat::zeros(150, 150 * MAX_FACES_PER_ROW, CV_8UC3);
+			Mat frameAllNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE * MAX_FACES_PER_ROW, CV_8UC3);
+			Mat frameRowNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE * MAX_FACES_PER_ROW, CV_8UC3);
 			int i = 0; //index to iterate through 
 
 			for (int row = 0; row < numFaces / MAX_FACES_PER_ROW; row++) {
@@ -159,9 +159,9 @@ int main(int argc, char** argv) {
 					Point pt2(faces[i].x, faces[i].y);	//Find point opposite to pt1
 					Mat faceROI = frameGray(faces[i]);	//Stores current face of the loop
 
-					resize(faceROI, faceROI, Size(150, 150)); //scale face into square shape
+					resize(faceROI, faceROI, Size(FACE_SIZE, FACE_SIZE)); //scale face into square shape
 					if (col == 0) { //on new iteration of detection
-						frameRowNormalizedFaces = Mat::zeros(150, 150, CV_8UC3); //set the faces frame to black
+						frameRowNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE, CV_8UC3); //set the faces frame to black
 						frameRowNormalizedFaces = faceROI.clone(); //clone the first face into the frame
 					} else { //if we have >1 face
 						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //horizontally concatenate the face into frame
@@ -183,16 +183,16 @@ int main(int argc, char** argv) {
 					Point pt2(faces[i].x, faces[i].y);	//Find point opposite to pt1
 					Mat faceROI = frameGray(faces[i]);	//Stores current face of the loop
 
-					resize(faceROI, faceROI, Size(150, 150)); //scale face into square shape
+					resize(faceROI, faceROI, Size(FACE_SIZE, FACE_SIZE)); //scale face into square shape
 					if (k == 0) { //on new iteration of detection
-						//frameRowNormalizedFaces = Mat::zeros(150, 150, CV_8UC3); //set the faces frame to black
+						//frameRowNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE, CV_8UC3); //set the faces frame to black
 						frameRowNormalizedFaces = faceROI.clone(); //clone the first face into the frame
 					} else { //if we have >1 face
 						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //horizontally concatenate the face into frame
 					}
 					i++;
 				}
-				Mat blank = Mat::zeros(150, 150, CV_8UC3);
+				Mat blank = Mat::zeros(FACE_SIZE, FACE_SIZE, CV_8UC3);
 				cv::cvtColor(blank, blank, CV_RGB2GRAY); //can't merge grey matrix with colored one, just convert blank to grey
 				for (; k < MAX_FACES_PER_ROW; k++) {
 					hconcat(frameRowNormalizedFaces, blank, frameRowNormalizedFaces); //fill the rest of the row with blanks
@@ -229,9 +229,9 @@ int main(int argc, char** argv) {
 				   circle(frame, center, radius,  Scalar(255, 0, 0), 2, 8, 0);	//Draw a circle around each eye
 			   }*/
 			   /*
-			   resize(faceROI, faceROI, Size(150, 150)); //scale face into square shape
+			   resize(faceROI, faceROI, Size(FACE_SIZE, FACE_SIZE)); //scale face into square shape
 			   if (i == 0) { //on new iteration of detection
-				   frameNormalizedFaces = Mat::zeros(150, 150, CV_8UC3); //set the faces frame to black
+				   frameNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE, CV_8UC3); //set the faces frame to black
 				   frameNormalizedFaces = faceROI.clone(); //clone the first face into the frame
 			   }
 			   else { //if we have >1 face

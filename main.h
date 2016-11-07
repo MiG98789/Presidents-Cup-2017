@@ -38,4 +38,4 @@ const bool PRINTCSV = false;
 const bool DEBUG = true;
 
 //window appearances
-const int MAX_FACES_PER_ROW = 2; //how many normalized faces to show per row before wrapping down to next row
+const int MAX_FACES_PER_ROW = 3; //how many normalized faces to show per row before wrapping down to next row
