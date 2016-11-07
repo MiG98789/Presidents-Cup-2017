@@ -4,10 +4,9 @@
 TODO:
 Input verification of course code
 Make functions and cpp/h files
-Check http://stackoverf	low.com/questions/19321804/this-function-or-variable-may-be-unsafe-visual-studio about  localtime() vs  localtime_s()
 Different way to load haar cascades(?)
 Find a way to use haarcascade_eye_tree_eyeglasses.xml since reflection from glasses prevent facial detection
-DEBUG mode (no csv)
+Detect face when tilted
 */
 
 #include "main.h"
@@ -15,11 +14,8 @@ DEBUG mode (no csv)
 using namespace cv;
 using namespace std;
 
-
-
 int main(int argc, char** argv) {
 	//---Haar cascades---//
-
 	CascadeClassifier faceCascade;	//Haar cascade classifier for face
 	CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
 	CascadeClassifier profileCascade;
@@ -99,7 +95,7 @@ int main(int argc, char** argv) {
 	//---Frame information---//
 	Mat frame;	//Captured frame
 	Mat frameGray;	//To preprocess the captured frame
-	Mat frameNormalizedFaces; //for the normalized faces
+	Mat frameNormalizedFaces; //For the normalized faces
 
 	vector<Rect> faces;	//Contain output of face detector
 	vector<Rect> eyes;	//Contain output of eye detector
@@ -249,6 +245,7 @@ int main(int argc, char** argv) {
 
 			   //---Draw rectangles around each face---//
 				rectangle(frame, pt1, pt2, Scalar(0, 255, 0), 2, 8, 0);
+
 			}
 
 			if (faces.size() > 0) { //if >=1 face, draw it
@@ -259,6 +256,7 @@ int main(int argc, char** argv) {
 			}
 
 			imshow("Camera", frame);	//Output the processed image
+
 
 			timeElapsed = timeNow - timeStart;
 
