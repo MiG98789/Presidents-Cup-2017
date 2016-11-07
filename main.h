@@ -30,6 +30,11 @@ const double TIMER_INTERVAL = 0;	//Time between every shot (in seconds)
 //Haar Cascades
 const std::string FACE_CASCADE_LOCATION = "./haarcascades/haarcascade_frontalface_alt.xml";	//Location of Haar cascade classifier for face
 const std::string EYE_CASCADE_LOCATION = "./haarcascades/haarcascade_eye.xml";	//Location of Haar cascade classifier for eyes
+const std::string PROFILE_FACE_CASCADE_LOCATION = "./haarcascades/haarcascade_profileface.xml";
 
 //debug shit
 const bool PRINTCSV = false;
+const bool DEBUG = true;
+
+//window appearances
+const int MAX_FACES_PER_ROW = 2; //how many normalized faces to show per row before wrapping down to next row

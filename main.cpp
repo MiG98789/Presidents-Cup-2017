@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
 
 	CascadeClassifier faceCascade;	//Haar cascade classifier for face
 	CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
+	CascadeClassifier profileCascade;
 
 	if (!faceCascade.load(FACE_CASCADE_LOCATION)) {
 		cerr << "ERROR: cannot load " << FACE_CASCADE_LOCATION;
@@ -31,6 +32,11 @@ int main(int argc, char** argv) {
 		cerr << "ERROR: cannot load " << EYE_CASCADE_LOCATION;
 		return 101;
 	}
+	if (!profileCascade.load(PROFILE_FACE_CASCADE_LOCATION)) {
+		cerr << "ERROR: CAN'T LOAD" << PROFILE_FACE_CASCADE_LOCATION;
+		return 102;
+	}
+
 	//---Webcam---//
 	VideoCapture capture(0); //0 for default camera
 	if (!capture.isOpened()) {
@@ -81,6 +87,7 @@ int main(int argc, char** argv) {
 	tString += tTemp.str();
 	tTemp.str(string());
 
+
 	//---Output file---//
 	ofstream ofs;
 	if (PRINTCSV) {
@@ -94,36 +101,118 @@ int main(int argc, char** argv) {
 	Mat frameGray;	//To preprocess the captured frame
 	Mat frameNormalizedFaces; //for the normalized faces
 
-	vector< Rect> faces;	//Contain output of face detector
-	vector< Rect> eyes;	//Contain output of eye detector
+	vector<Rect> faces;	//Contain output of face detector
+	vector<Rect> eyes;	//Contain output of eye detector
+	vector<Rect> profiles;
 
-	// KEY LINE: Start the window thread
+	//Start the window thread
 	startWindowThread();
 	namedWindow("windowNormalizedFaces");
-	
+
 	while (true) {
 		if (waitKey(1) == ESC) //Press esc to exit
 			break;
 
 		timerDuration = (clock() - timerPrev) / (double)CLOCKS_PER_SEC;
 
-		if (timerDuration > TIMER_INTERVAL)
-		{
+		if (timerDuration > TIMER_INTERVAL) {
 			capture >> frame;	//Capture frame
 			cvtColor(frame, frameGray, CV_BGR2GRAY);	//Convert frame from BGR to gray for easier processing
 			equalizeHist(frameGray, frameGray);	//Normalise brightness and increase contrast: src,dest
 			faceCascade.detectMultiScale(
 				frameGray,
 				faces,
+				1.2,
+				10,
+				0 | CV_HAAR_SCALE_IMAGE,
+				Size(0, 0),
+				Size(300, 300)
+			); //Detect faces, can also try CV_HAAR_SCALE_IMAGE | CV_HAAR_DO_CANNY_PRUNING
+
+			if (DEBUG) {
+				cout << timeElapsed << "\tNumber of faces: " << faces.size() << endl;
+			}
+
+			/* //detect profiles (when face is turned to side)
+			profileCascade.detectMultiScale(
+				frameGray,
+				profiles,
 				1.1,
 				10,
 				0 | CV_HAAR_SCALE_IMAGE,
 				cvSize(0, 0),
 				cvSize(300, 300)
-			); //Detect faces, can also try CV_HAAR_SCALE_IMAGE | CV_HAAR_DO_CANNY_PRUNING
+			);
+			for (int k = 0; k < profiles.size(); k++) {
+				Point pt1(profiles[k].x + profiles[k].width, profiles[k].y + profiles[k].height);
+				Point pt2(profiles[k].x, profiles[k].y);
+				Mat profileROI = frameGray(profiles[k]);
+				rectangle(frame, pt1, pt2, cvScalar(255, 0, ), 2, 8, 0);
+			}*/
 
 
 			//---Loop through each face---//
+			int numFaces = faces.size();
+			Mat frameAllNormalizedFaces = Mat::zeros(150, 150 * MAX_FACES_PER_ROW, CV_8UC3);
+			Mat frameRowNormalizedFaces = Mat::zeros(150, 150 * MAX_FACES_PER_ROW, CV_8UC3);
+			int i = 0; //index to iterate through 
+
+			for (int row = 0; row < numFaces / MAX_FACES_PER_ROW; row++) {
+				for (int col = 0; col < MAX_FACES_PER_ROW; col++) {
+					Point pt1(faces[i].x + faces[i].width, faces[i].y + faces[i].height);	//Find first point of the face
+					Point pt2(faces[i].x, faces[i].y);	//Find point opposite to pt1
+					Mat faceROI = frameGray(faces[i]);	//Stores current face of the loop
+
+					resize(faceROI, faceROI, Size(150, 150)); //scale face into square shape
+					if (col == 0) { //on new iteration of detection
+						frameRowNormalizedFaces = Mat::zeros(150, 150, CV_8UC3); //set the faces frame to black
+						frameRowNormalizedFaces = faceROI.clone(); //clone the first face into the frame
+					}
+					else { //if we have >1 face
+						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //horizontally concatenate the face into frame
+					}
+					i++;
+				}
+				if (row == 0) {
+					frameAllNormalizedFaces = frameRowNormalizedFaces.clone();
+				}
+				else {
+					vconcat(frameAllNormalizedFaces, frameRowNormalizedFaces, frameAllNormalizedFaces);
+				}
+			}
+
+			//but what if we don't have perfect multiple of MAX_FACES_PER_ROW?
+			if (numFaces % MAX_FACES_PER_ROW != 0) {
+				int k;
+				for (k = 0; k < numFaces % MAX_FACES_PER_ROW; k++) {
+					Point pt1(faces[i].x + faces[i].width, faces[i].y + faces[i].height);	//Find first point of the face
+					Point pt2(faces[i].x, faces[i].y);	//Find point opposite to pt1
+					Mat faceROI = frameGray(faces[i]);	//Stores current face of the loop
+
+					resize(faceROI, faceROI, Size(150, 150)); //scale face into square shape
+					if (k == 0) { //on new iteration of detection
+						//frameRowNormalizedFaces = Mat::zeros(150, 150, CV_8UC3); //set the faces frame to black
+						frameRowNormalizedFaces = faceROI.clone(); //clone the first face into the frame
+					}
+					else { //if we have >1 face
+						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //horizontally concatenate the face into frame
+					}
+					i++;
+				}
+				Mat blank = Mat::zeros(150, 150,CV_8UC3);
+				cv::cvtColor(blank, blank, CV_RGB2GRAY); //can't merge grey matrix with colored one, just convert blank to grey
+				for (; k < MAX_FACES_PER_ROW; k++) {
+					hconcat(frameRowNormalizedFaces, blank, frameRowNormalizedFaces); //fill the rest of the row with blanks
+				}
+				if (numFaces < MAX_FACES_PER_ROW) {
+					frameAllNormalizedFaces = frameRowNormalizedFaces.clone();
+				}
+				else {
+					vconcat(frameAllNormalizedFaces, frameRowNormalizedFaces, frameAllNormalizedFaces);
+				}
+			}
+
+
 			for (int i = 0; i < faces.size(); i++) {
 
 				//---Detect size of each face---//
@@ -147,32 +236,33 @@ int main(int argc, char** argv) {
 				   int radius = cvRound((eyes[j].width + eyes[j].height)*0.25);	//Find the radius of each eye
 				   circle(frame, center, radius,  Scalar(255, 0, 0), 2, 8, 0);	//Draw a circle around each eye
 			   }*/
+			   /*
+			   resize(faceROI, faceROI, Size(150, 150)); //scale face into square shape
+			   if (i == 0) { //on new iteration of detection
+				   frameNormalizedFaces = Mat::zeros(150, 150, CV_8UC3); //set the faces frame to black
+				   frameNormalizedFaces = faceROI.clone(); //clone the first face into the frame
+			   }
+			   else { //if we have >1 face
+				   hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces); //horizontally concatenate the face into frame
+			   }
+			   */
 
-				resize(faceROI, faceROI, Size(150, 150)); //scale face into square shape
-				if (i == 0) { //on new iteration of detection
-					frameNormalizedFaces = Mat::zeros(150,150, CV_8UC3); //set the faces frame to black
-					frameNormalizedFaces = faceROI.clone(); //clone the first face into the frame
-				}
-				else { //if we have >1 face
-					hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces); //horizontally concatenate the face into frame
-				}
-
-				//---Draw rectangles around each face---//
-				rectangle(frame, pt1, pt2, cvScalar(0, 255, 0), 2, 8, 0);
+			   //---Draw rectangles around each face---//
+				rectangle(frame, pt1, pt2, Scalar(0, 255, 0), 2, 8, 0);
 			}
 
 			if (faces.size() > 0) { //if >=1 face, draw it
-				imshow("windowNormalizedFaces", frameNormalizedFaces);
-			} else if (getWindowProperty("windowNormalizedFaces", 0) != -1){ //if 0 faces and window isn't closed yet, close it
+				imshow("windowNormalizedFaces", frameAllNormalizedFaces);
+			}
+			else if (getWindowProperty("windowNormalizedFaces", 0) != -1) { //if 0 faces and window isn't closed yet, close it
 				destroyWindow("windowNormalizedFaces");
 			}
 
-
-			imshow("Result", frame);	//Output the processed image
+			imshow("Camera", frame);	//Output the processed image
 
 			timeElapsed = timeNow - timeStart;
 
-			cout << timeElapsed << "\tNumber of faces: " << faces.size() << endl;
+		
 
 			if (PRINTCSV) {
 				ofs << timeElapsed << ',' << faces.size() << '\n';
