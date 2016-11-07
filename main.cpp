@@ -244,11 +244,8 @@ int main(int argc, char** argv) {
 
 			}
 
-			if (faces.size() > 0) { //if >=1 face, draw it
-				imshow("windowNormalizedFaces", frameAllNormalizedFaces);
-			} else if (getWindowProperty("windowNormalizedFaces", 0) != -1) { //if 0 faces and window isn't closed yet, close it
-				destroyWindow("windowNormalizedFaces");
-			}
+			imshow("windowNormalizedFaces", frameAllNormalizedFaces);
+
 
 			imshow("Camera", frame);	//Output the processed image
 
