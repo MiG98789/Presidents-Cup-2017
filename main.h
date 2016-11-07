@@ -22,8 +22,8 @@
 //---Custom header files---//
 
 //---Global constant variables---//
-//Escape button
-const int ESC = 27;
+//Buttons
+const int ESC = 27;	//Escape button
 
 //Timer
 const double TIMER_INTERVAL = 0;	//Time between every shot (in seconds)
@@ -31,12 +31,12 @@ const double TIMER_INTERVAL = 0;	//Time between every shot (in seconds)
 //Haar Cascades
 const std::string FACE_CASCADE_LOCATION = "./haarcascades/haarcascade_frontalface_alt.xml";	//Location of Haar cascade classifier for face
 const std::string EYE_CASCADE_LOCATION = "./haarcascades/haarcascade_eye.xml";	//Location of Haar cascade classifier for eyes
-const std::string PROFILE_FACE_CASCADE_LOCATION = "./haarcascades/haarcascade_profileface.xml";
+const std::string PROFILE_FACE_CASCADE_LOCATION = "./haarcascades/haarcascade_profileface.xml";	//Location of Haar cascade classifier for profile face
 
-//debug shit
-const bool PRINTCSV = false;
-const bool DEBUG = true;
+//Debug
+const bool PRINTCSV = false;	//Output to a csv file if true
+const bool DEBUG = true;		//Print all cout and cerr statements if true
 
 //window appearances
-const int FACE_SIZE = 100;
+const int FACE_SIZE = 100;	//Length of each square tile of a cropped-and-scaled face
 const int MAX_FACES_PER_ROW = 3; //how many normalized faces to show per row before wrapping down to next row

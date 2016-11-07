@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
 		if (timerDuration > TIMER_INTERVAL) {
 			capture >> frame;	//Capture frame
 			cvtColor(frame, frameGray, CV_BGR2GRAY);	//Convert frame from BGR to gray for easier processing
-			equalizeHist(frameGray, frameGray);	//Normalise brightness and increase contrast: src,dest
+			equalizeHist(frameGray, frameGray);	//Normalize brightness and increase contrast: src,dest
 			faceCascade.detectMultiScale(
 				frameGray,
 				faces,
@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
 			int numFaces = faces.size();
 			Mat frameAllNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE * MAX_FACES_PER_ROW, CV_8UC3);
 			Mat frameRowNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE * MAX_FACES_PER_ROW, CV_8UC3);
-			int i = 0; //index to iterate through 
+			int i = 0; //Index to iterate through 
 
 			for (int row = 0; row < numFaces / MAX_FACES_PER_ROW; row++) {
 				for (int col = 0; col < MAX_FACES_PER_ROW; col++) {
@@ -159,12 +159,12 @@ int main(int argc, char** argv) {
 					Point pt2(faces[i].x, faces[i].y);	//Find point opposite to pt1
 					Mat faceROI = frameGray(faces[i]);	//Stores current face of the loop
 
-					resize(faceROI, faceROI, Size(FACE_SIZE, FACE_SIZE)); //scale face into square shape
-					if (col == 0) { //on new iteration of detection
-						frameRowNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE, CV_8UC3); //set the faces frame to black
-						frameRowNormalizedFaces = faceROI.clone(); //clone the first face into the frame
-					} else { //if we have >1 face
-						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //horizontally concatenate the face into frame
+					resize(faceROI, faceROI, Size(FACE_SIZE, FACE_SIZE)); //Scale face into square shape
+					if (col == 0) { //On new iteration of detection
+						frameRowNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE, CV_8UC3); //Set the faces frame to black
+						frameRowNormalizedFaces = faceROI.clone(); //Clone the first face into the frame
+					} else { //If we have >1 face
+						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //Horizontally concatenate the face into frame
 					}
 					i++;
 				}
@@ -175,7 +175,7 @@ int main(int argc, char** argv) {
 				}
 			}
 
-			//but what if we don't have perfect multiple of MAX_FACES_PER_ROW?
+			//But what if we don't have perfect multiple of MAX_FACES_PER_ROW?
 			if (numFaces % MAX_FACES_PER_ROW != 0) {
 				int k;
 				for (k = 0; k < numFaces % MAX_FACES_PER_ROW; k++) {
@@ -183,19 +183,19 @@ int main(int argc, char** argv) {
 					Point pt2(faces[i].x, faces[i].y);	//Find point opposite to pt1
 					Mat faceROI = frameGray(faces[i]);	//Stores current face of the loop
 
-					resize(faceROI, faceROI, Size(FACE_SIZE, FACE_SIZE)); //scale face into square shape
-					if (k == 0) { //on new iteration of detection
-						//frameRowNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE, CV_8UC3); //set the faces frame to black
-						frameRowNormalizedFaces = faceROI.clone(); //clone the first face into the frame
-					} else { //if we have >1 face
-						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //horizontally concatenate the face into frame
+					resize(faceROI, faceROI, Size(FACE_SIZE, FACE_SIZE)); //Scale face into square shape
+					if (k == 0) { //On new iteration of detection
+						//frameRowNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE, CV_8UC3); //Set the faces frame to black
+						frameRowNormalizedFaces = faceROI.clone(); //Clone the first face into the frame
+					} else { //If we have >1 face
+						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //Horizontally concatenate the face into frame
 					}
 					i++;
 				}
 				Mat blank = Mat::zeros(FACE_SIZE, FACE_SIZE, CV_8UC3);
-				cv::cvtColor(blank, blank, CV_RGB2GRAY); //can't merge grey matrix with colored one, just convert blank to grey
+				cv::cvtColor(blank, blank, CV_RGB2GRAY); //Can't merge grey matrix with colored one, just convert blank to grey
 				for (; k < MAX_FACES_PER_ROW; k++) {
-					hconcat(frameRowNormalizedFaces, blank, frameRowNormalizedFaces); //fill the rest of the row with blanks
+					hconcat(frameRowNormalizedFaces, blank, frameRowNormalizedFaces); //Fill the rest of the row with blanks
 				}
 				if (numFaces < MAX_FACES_PER_ROW) {
 					frameAllNormalizedFaces = frameRowNormalizedFaces.clone();
