@@ -163,16 +163,14 @@ int main(int argc, char** argv) {
 					if (col == 0) { //on new iteration of detection
 						frameRowNormalizedFaces = Mat::zeros(150, 150, CV_8UC3); //set the faces frame to black
 						frameRowNormalizedFaces = faceROI.clone(); //clone the first face into the frame
-					}
-					else { //if we have >1 face
+					} else { //if we have >1 face
 						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //horizontally concatenate the face into frame
 					}
 					i++;
 				}
 				if (row == 0) {
 					frameAllNormalizedFaces = frameRowNormalizedFaces.clone();
-				}
-				else {
+				} else {
 					vconcat(frameAllNormalizedFaces, frameRowNormalizedFaces, frameAllNormalizedFaces);
 				}
 			}
@@ -189,21 +187,19 @@ int main(int argc, char** argv) {
 					if (k == 0) { //on new iteration of detection
 						//frameRowNormalizedFaces = Mat::zeros(150, 150, CV_8UC3); //set the faces frame to black
 						frameRowNormalizedFaces = faceROI.clone(); //clone the first face into the frame
-					}
-					else { //if we have >1 face
+					} else { //if we have >1 face
 						hconcat(frameRowNormalizedFaces, faceROI, frameRowNormalizedFaces); //horizontally concatenate the face into frame
 					}
 					i++;
 				}
-				Mat blank = Mat::zeros(150, 150,CV_8UC3);
+				Mat blank = Mat::zeros(150, 150, CV_8UC3);
 				cv::cvtColor(blank, blank, CV_RGB2GRAY); //can't merge grey matrix with colored one, just convert blank to grey
 				for (; k < MAX_FACES_PER_ROW; k++) {
 					hconcat(frameRowNormalizedFaces, blank, frameRowNormalizedFaces); //fill the rest of the row with blanks
 				}
 				if (numFaces < MAX_FACES_PER_ROW) {
 					frameAllNormalizedFaces = frameRowNormalizedFaces.clone();
-				}
-				else {
+				} else {
 					vconcat(frameAllNormalizedFaces, frameRowNormalizedFaces, frameAllNormalizedFaces);
 				}
 			}
@@ -250,8 +246,7 @@ int main(int argc, char** argv) {
 
 			if (faces.size() > 0) { //if >=1 face, draw it
 				imshow("windowNormalizedFaces", frameAllNormalizedFaces);
-			}
-			else if (getWindowProperty("windowNormalizedFaces", 0) != -1) { //if 0 faces and window isn't closed yet, close it
+			} else if (getWindowProperty("windowNormalizedFaces", 0) != -1) { //if 0 faces and window isn't closed yet, close it
 				destroyWindow("windowNormalizedFaces");
 			}
 
@@ -260,7 +255,7 @@ int main(int argc, char** argv) {
 
 			timeElapsed = timeNow - timeStart;
 
-		
+
 
 			if (PRINTCSV) {
 				ofs << timeElapsed << ',' << faces.size() << '\n';
