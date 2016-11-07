@@ -2,6 +2,7 @@
 
 /*
 TODO: 
+File output does not begin at 0s
 Input verification of course code
 Make functions and cpp/h files
 check http://stackoverflow.com/questions/19321804/this-function-or-variable-may-be-unsafe-visual-studio about std::localtime() vs std::localtime_s()
