@@ -1,5 +1,6 @@
 #pragma once
 #pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
+//Check http ://stackoverflow.com/questions/19321804/this-function-or-variable-may-be-unsafe-visual-studio about localtime() vs  localtime_s()
 
 //---Standard C++ header files---//
 #include <iostream>

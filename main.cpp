@@ -4,10 +4,9 @@
 TODO:
 Input verification of course code
 Make functions and cpp/h files
-Check http://stackoverf	low.com/questions/19321804/this-function-or-variable-may-be-unsafe-visual-studio about  localtime() vs  localtime_s()
 Different way to load haar cascades(?)
 Find a way to use haarcascade_eye_tree_eyeglasses.xml since reflection from glasses prevent facial detection
-DEBUG mode (no csv)
+Detect face when tilted
 */
 
 #include "main.h"
@@ -15,11 +14,8 @@ DEBUG mode (no csv)
 using namespace cv;
 using namespace std;
 
-
-
 int main(int argc, char** argv) {
 	//---Haar cascades---//
-
 	CascadeClassifier faceCascade;	//Haar cascade classifier for face
 	CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
 
@@ -31,6 +27,7 @@ int main(int argc, char** argv) {
 		cerr << "ERROR: cannot load " << EYE_CASCADE_LOCATION;
 		return 101;
 	}
+
 	//---Webcam---//
 	VideoCapture capture(0); //0 for default camera
 	if (!capture.isOpened()) {
@@ -92,10 +89,10 @@ int main(int argc, char** argv) {
 	//---Frame information---//
 	Mat frame;	//Captured frame
 	Mat frameGray;	//To preprocess the captured frame
-	Mat frameNormalizedFaces; //for the normalized faces
+	Mat frameNormalizedFaces; //For the normalized faces
 
-	vector< Rect> faces;	//Contain output of face detector
-	vector< Rect> eyes;	//Contain output of eye detector
+	vector<Rect> faces;	//Contain output of face detector
+	vector<Rect> eyes;	//Contain output of eye detector
 
 	// KEY LINE: Start the window thread
 	startWindowThread();
@@ -148,13 +145,13 @@ int main(int argc, char** argv) {
 				   circle(frame, center, radius,  Scalar(255, 0, 0), 2, 8, 0);	//Draw a circle around each eye
 			   }*/
 
-				resize(faceROI, faceROI, Size(150, 150)); //scale face into square shape
-				if (i == 0) { //on new iteration of detection
-					frameNormalizedFaces = Mat::zeros(150,150, CV_8UC3); //set the faces frame to black
-					frameNormalizedFaces = faceROI.clone(); //clone the first face into the frame
+				resize(faceROI, faceROI, Size(150, 150)); //Scale face into square shape
+				if (i == 0) { //On new iteration of detection
+					frameNormalizedFaces = Mat::zeros(150,150, CV_8UC3); //Set the faces frame to black
+					frameNormalizedFaces = faceROI.clone(); //Clone the first face into the frame
 				}
 				else { //if we have >1 face
-					hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces); //horizontally concatenate the face into frame
+					hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces); //Horizontally concatenate the face into frame
 				}
 
 				//---Draw rectangles around each face---//
@@ -166,7 +163,6 @@ int main(int argc, char** argv) {
 			} else if (getWindowProperty("windowNormalizedFaces", 0) != -1){ //if 0 faces and window isn't closed yet, close it
 				destroyWindow("windowNormalizedFaces");
 			}
-
 
 			imshow("Result", frame);	//Output the processed image
 
