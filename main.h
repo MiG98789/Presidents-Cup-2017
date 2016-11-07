@@ -18,5 +18,15 @@
 #include <opencv2\highgui\highgui.hpp>
 #include <opencv2\imgproc\imgproc.hpp>
 
+//---Custom header files---//
+
 //---Global constant variables---//
+//Escape button
 const int ESC = 27;
+
+//Timer
+const double TIMER_INTERVAL = 0;	//Time between every shot (in seconds)
+
+//Haar Cascades
+const std::string FACE_CASCADE_LOCATION = "./haarcascades/haarcascade_frontalface_alt.xml";	//Location of Haar cascade classifier for face
+const std::string EYE_CASCADE_LOCATION = "./haarcascades/haarcascade_eye.xml";	//Location of Haar cascade classifier for eyes

@@ -2,10 +2,11 @@
 
 /*
 TODO: 
-File output does not begin at 0s
 Input verification of course code
 Make functions and cpp/h files
-check http://stackoverflow.com/questions/19321804/this-function-or-variable-may-be-unsafe-visual-studio about std::localtime() vs std::localtime_s()
+Check http://stackoverflow.com/questions/19321804/this-function-or-variable-may-be-unsafe-visual-studio about std::localtime() vs std::localtime_s()
+Different way to load haar cascades(?)
+Find a way to use haarcascade_eye_tree_eyeglasses.xml since reflection from glasses prevent facial detection
 */
 
 #include "main.h"
@@ -14,24 +15,21 @@ int main(int argc, char** argv)
 {
 	//---Timer---//
 	std::clock_t  timerPrev = std::clock();	//Time of the last frame shot
-	const double timerInterval = 0;	//Time between every shot (in seconds)
 	double timerDuration = 0;	//Time difference between current time and time of last frame shot
 
 	//---Haar cascades---//
-	std::string faceCascadeLocation = "./haarcascades/haarcascade_frontalface_alt.xml";	//Location of Haar cascade classifier for face
-	std::string eyeCascadeLocation = "./haarcascades/haarcascade_eye.xml";	//Location of Haar cascade classifier for eyes
 	cv::CascadeClassifier faceCascade;	//Haar cascade classifier for face
 	cv::CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
 
-	if (!faceCascade.load(faceCascadeLocation))
+	if (!faceCascade.load(FACE_CASCADE_LOCATION))
 	{
-		std::cerr << "ERROR: cannot cascade file for face";
+		std::cerr << "ERROR: cannot load " << FACE_CASCADE_LOCATION;
 		return 100;
 	}
 
-	if (!eyeCascade.load(eyeCascadeLocation))
+	if (!eyeCascade.load(EYE_CASCADE_LOCATION))
 	{
-		std::cerr << "ERROR: cannot load cascade file for eyes";
+		std::cerr << "ERROR: cannot load " << EYE_CASCADE_LOCATION;
 		return 101;
 	}
 
@@ -43,6 +41,12 @@ int main(int argc, char** argv)
 		return 200;
 	}
 	capture.set(CV_CAP_PROP_BUFFERSIZE, 1); //Set how many frames the buffer will store
+
+	//---Course---//
+	std::string courseCode;	//Name of course
+	std::cout << "What is the course code? ";
+	std::cin >> courseCode;
+	std::transform(courseCode.begin(), courseCode.end(), courseCode.begin(), ::tolower);	//Make course code lowercase
 
 	//---Time information---//
 	time_t start = time(0);	//Get time of start of lecture
@@ -74,12 +78,6 @@ int main(int argc, char** argv)
 	tString += tTemp.str();
 	tTemp.str(std::string());
 
-	//---Course---//
-	std::string courseCode;	//Name of course
-	std::cout << "What is the course code? ";
-	std::cin >> courseCode;
-	std::transform(courseCode.begin(), courseCode.end(), courseCode.begin(), ::tolower);	//Make course code lowercase
-
 	//---Output file---//
 	std::string file = tString + "-" + courseCode + ".csv";
 	std::ofstream ofs(file);	//Output file stream, data format: seconds since start of lecture, results\n
@@ -98,7 +96,7 @@ int main(int argc, char** argv)
 
 		timerDuration = (std::clock() - timerPrev) / (double)CLOCKS_PER_SEC;
 
-		if (timerDuration > timerInterval)
+		if (timerDuration > TIMER_INTERVAL)
 		{
 			capture >> frame;	//Capture frame
 			cvtColor(frame, frameGray, CV_BGR2GRAY);	//Convert frame from BGR to gray for easier processing
