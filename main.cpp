@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 				//---Detect size of each face---//
 				Point pt1(faces[i].x + faces[i].width, faces[i].y + faces[i].height);	//Find first point of the face
 				Point pt2(faces[i].x, faces[i].y);	//Find point opposite to pt1
-				Mat faceROI = frame(faces[i]);	//Stores current face of the loop
+				Mat faceROI = frameGray(faces[i]);	//Stores current face of the loop
 
 			   /*
 			   //---Detect eyes---//
@@ -148,23 +148,22 @@ int main(int argc, char** argv) {
 				   circle(frame, center, radius,  Scalar(255, 0, 0), 2, 8, 0);	//Draw a circle around each eye
 			   }*/
 
-				resize(faceROI, faceROI, Size(150, 150));
-				if (i == 0) {
-					frameNormalizedFaces = Mat::zeros(150,150, CV_8UC3);
-					frameNormalizedFaces = faceROI.clone();
+				resize(faceROI, faceROI, Size(150, 150)); //scale face into square shape
+				if (i == 0) { //on new iteration of detection
+					frameNormalizedFaces = Mat::zeros(150,150, CV_8UC3); //set the faces frame to black
+					frameNormalizedFaces = faceROI.clone(); //clone the first face into the frame
 				}
-				else {
-					hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces);
+				else { //if we have >1 face
+					hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces); //horizontally concatenate the face into frame
 				}
 
-				//hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces);
 				//---Draw rectangles around each face---//
 				rectangle(frame, pt1, pt2, cvScalar(0, 255, 0), 2, 8, 0);
 			}
 
-			if (faces.size() > 0) {
+			if (faces.size() > 0) { //if >=1 face, draw it
 				imshow("windowNormalizedFaces", frameNormalizedFaces);
-			} else if (getWindowProperty("windowNormalizedFaces", 0) != -1){ //if window isn't closed yet, close it
+			} else if (getWindowProperty("windowNormalizedFaces", 0) != -1){ //if 0 faces and window isn't closed yet, close it
 				destroyWindow("windowNormalizedFaces");
 			}
 
