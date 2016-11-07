@@ -15,12 +15,11 @@ DEBUG mode (no csv)
 using namespace cv;
 using namespace std;
 
-int main(int argc, char** argv) {
-	//---Timer---//
-	clock_t  timerPrev = clock();	//Time of the last frame shot
-	double timerDuration = 0;	//Time difference between current time and time of last frame shot
 
+
+int main(int argc, char** argv) {
 	//---Haar cascades---//
+
 	CascadeClassifier faceCascade;	//Haar cascade classifier for face
 	CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
 
@@ -32,7 +31,6 @@ int main(int argc, char** argv) {
 		cerr << "ERROR: cannot load " << EYE_CASCADE_LOCATION;
 		return 101;
 	}
-
 	//---Webcam---//
 	VideoCapture capture(0); //0 for default camera
 	if (!capture.isOpened()) {
@@ -42,13 +40,16 @@ int main(int argc, char** argv) {
 	capture.set(CV_CAP_PROP_BUFFERSIZE, 1); //Set how many frames the buffer will store
 
 	//---Course---//	
-
 	string courseCode;	//Name of course
 	if (PRINTCSV) {
 		cout << "What is the course code? ";
 		cin >> courseCode;
 		transform(courseCode.begin(), courseCode.end(), courseCode.begin(), ::tolower);	//Make course code lowercase
 	}
+
+	//---Timer---//
+	clock_t  timerPrev = clock();	//Time of the last frame shot
+	double timerDuration = 0;	//Time difference between current time and time of last frame shot
 
 	//---Time information---//
 	time_t start = time(0);	//Get time of start of lecture
@@ -91,9 +92,15 @@ int main(int argc, char** argv) {
 	//---Frame information---//
 	Mat frame;	//Captured frame
 	Mat frameGray;	//To preprocess the captured frame
+	Mat frameNormalizedFaces; //for the normalized faces
+
 	vector< Rect> faces;	//Contain output of face detector
 	vector< Rect> eyes;	//Contain output of eye detector
 
+	// KEY LINE: Start the window thread
+	startWindowThread();
+	namedWindow("windowNormalizedFaces");
+	
 	while (true) {
 		if (waitKey(1) == ESC) //Press esc to exit
 			break;
@@ -115,14 +122,14 @@ int main(int argc, char** argv) {
 				cvSize(300, 300)
 			); //Detect faces, can also try CV_HAAR_SCALE_IMAGE | CV_HAAR_DO_CANNY_PRUNING
 
-			//---Loop through each face---//
-			Mat frameNormalizedFaces;
 
+			//---Loop through each face---//
 			for (int i = 0; i < faces.size(); i++) {
+
 				//---Detect size of each face---//
 				Point pt1(faces[i].x + faces[i].width, faces[i].y + faces[i].height);	//Find first point of the face
 				Point pt2(faces[i].x, faces[i].y);	//Find point opposite to pt1
-				Mat faceROI = frameGray(faces[i]);	//Stores current face of the loop
+				Mat faceROI = frame(faces[i]);	//Stores current face of the loop
 
 			   /*
 			   //---Detect eyes---//
@@ -140,14 +147,28 @@ int main(int argc, char** argv) {
 				   int radius = cvRound((eyes[j].width + eyes[j].height)*0.25);	//Find the radius of each eye
 				   circle(frame, center, radius,  Scalar(255, 0, 0), 2, 8, 0);	//Draw a circle around each eye
 			   }*/
-				resize(faceROI, faceROI, Size(100, 100));
-				hconcat(faceROI, faceROI, frameNormalizedFaces);
+
+				resize(faceROI, faceROI, Size(150, 150));
+				if (i == 0) {
+					frameNormalizedFaces = Mat::zeros(150,150, CV_8UC3);
+					frameNormalizedFaces = faceROI.clone();
+				}
+				else {
+					hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces);
+				}
+
 				//hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces);
 				//---Draw rectangles around each face---//
+				rectangle(frame, pt1, pt2, cvScalar(0, 255, 0), 2, 8, 0);
 			}
-			if (!frameNormalizedFaces.empty()) {
-				imshow("NormalizedFaces", frameNormalizedFaces);
+
+			if (faces.size() > 0) {
+				imshow("windowNormalizedFaces", frameNormalizedFaces);
+			} else if (getWindowProperty("windowNormalizedFaces", 0) != -1){ //if window isn't closed yet, close it
+				destroyWindow("windowNormalizedFaces");
 			}
+
+
 			imshow("Result", frame);	//Output the processed image
 
 			timeElapsed = timeNow - timeStart;
