@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
 	//---Haar cascades---//
 	CascadeClassifier faceCascade;	//Haar cascade classifier for face
 	CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
-	CascadeClassifier profileCascade;
+	CascadeClassifier profileCascade;	//Haar cascade classfier for profile face
 
 	if (!faceCascade.load(FACE_CASCADE_LOCATION)) {
 		cerr << "ERROR: cannot load " << FACE_CASCADE_LOCATION;
