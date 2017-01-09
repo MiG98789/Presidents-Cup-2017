@@ -1,4 +1,4 @@
-//main.cpp
+//Main.cpp
 
 /*
 TODO:
@@ -22,22 +22,22 @@ int main(int argc, char** argv) {
 
 	if (!faceCascade.load(FACE_CASCADE_LOCATION)) {
 		cerr << "ERROR: cannot load " << FACE_CASCADE_LOCATION;
-		return 100;
+		exit(100);
 	}
 	if (!eyeCascade.load(EYE_CASCADE_LOCATION)) {
 		cerr << "ERROR: cannot load " << EYE_CASCADE_LOCATION;
-		return 101;
+		exit(101);
 	}
 	if (!profileCascade.load(PROFILE_FACE_CASCADE_LOCATION)) {
 		cerr << "ERROR: CAN'T LOAD" << PROFILE_FACE_CASCADE_LOCATION;
-		return 102;
+		exit(102);
 	}
 
 	//---Webcam---//
 	VideoCapture capture(0); //0 for default camera
 	if (!capture.isOpened()) {
 		cerr << "ERROR: Cannot initialise camera";
-		return 200;
+		exit(200);
 	}
 	capture.set(CV_CAP_PROP_BUFFERSIZE, 1); //Set how many frames the buffer will store
 
@@ -82,7 +82,6 @@ int main(int argc, char** argv) {
 	tTemp << tmStart->tm_sec;	//Get seconds
 	tString += tTemp.str();
 	tTemp.str(string());
-
 
 	//---Output file---//
 	ofstream ofs;
@@ -246,13 +245,9 @@ int main(int argc, char** argv) {
 
 			imshow("windowNormalizedFaces", frameAllNormalizedFaces);
 
-
 			imshow("Camera", frame);	//Output the processed image
 
-
 			timeElapsed = timeNow - timeStart;
-
-
 
 			if (PRINTCSV) {
 				ofs << timeElapsed << ',' << faces.size() << '\n';

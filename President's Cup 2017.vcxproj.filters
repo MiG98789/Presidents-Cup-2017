@@ -15,12 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="..\..\President%27s Cup 2017\Presidents-Cup-2017\FacialRecognition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\President%27s Cup 2017\Presidents-Cup-2017\main.h">
+    <ClInclude Include="Main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\President%27s Cup 2017\Presidents-Cup-2017\FacialRecognition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
