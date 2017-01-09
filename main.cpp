@@ -147,7 +147,7 @@ int main(int argc, char** argv) {
 
 
 			//---Loop through each face---//
-			int numFaces = faces.size();
+			int numFaces = static_cast<int>(faces.size());
 			Mat frameAllNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE * MAX_FACES_PER_ROW, CV_8UC3);
 			Mat frameRowNormalizedFaces = Mat::zeros(FACE_SIZE, FACE_SIZE * MAX_FACES_PER_ROW, CV_8UC3);
 			int i = 0; //Index to iterate through 
