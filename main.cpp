@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 
 	//testing the graph stuff
 	overviewWindow::getInstance().initialize();
-	overviewWindow::getInstance().addText("this is some text", 20, 30);
+	overviewWindow::getInstance().addText("text here. call clear() to reset shit", 20, 30);
 	overviewWindow::getInstance().addLine(0, 0, 200, 200, 2, Scalar(0, 0, 100));
 	overviewWindow::getInstance().addCircle(200, 300, 50, 3, Scalar(0, 255, 0));
 	overviewWindow::getInstance().addRectangle(250, 10, 350, 20, 2);

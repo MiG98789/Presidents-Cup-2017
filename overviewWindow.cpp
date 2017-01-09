@@ -1,7 +1,9 @@
 #include "overviewWindow.h"
 
-void overviewWindow::initialize(int width, int height) {
-	canvas = Mat(height, width, CV_8UC3, Scalar(255, 255, 255)); //reversed RGB (aka BGR)
+void overviewWindow::initialize(int w, int h) {
+	width = w;
+	height = h;
+	canvas = Mat(h, w, CV_8UC3, Scalar(255, 255, 255)); //reversed RGB (aka BGR)
 	update();
 }
 
@@ -25,3 +27,7 @@ void overviewWindow::addRectangle(int x1, int y1, int x2, int y2, int thickness,
 	update();
 }
 
+void overviewWindow::clear() {
+	rectangle(canvas, Point(0, 0), Point(width, height), Scalar(255, 255, 255), CV_FILLED);
+	update();
+}

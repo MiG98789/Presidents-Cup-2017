@@ -18,13 +18,16 @@ public:
 		static overviewWindow instance;
 		return instance;
 	}
-	void initialize(int width = 500, int height = 300);
+	void initialize(int w = 500, int h = 300);
 	void addText(const string msg, int x, int y, int size = 1, Scalar color = Scalar(0, 0, 0));
 	void addLine(int x1, int y1, int x2, int y2, int thickness = 1, Scalar color = Scalar(0, 0, 0));
 	void addCircle(int x, int y, int r, int thickness, Scalar color = Scalar(0, 0, 0), bool solid = false);
 	void addRectangle(int x1, int y1, int x2, int y2, int thickness = 1, Scalar color = Scalar(0, 0, 0), bool solid = false);
+	void clear();
+
 private:
 	Mat canvas; 
+	int width, height;
 	inline void update() {
 		imshow("overviewWindow", canvas);
 	}
