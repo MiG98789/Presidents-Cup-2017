@@ -23,6 +23,7 @@
 
 //---Custom header files---//
 
+
 //---Global constant variables---//
 //Buttons
 const int ESC = 27;	//Escape button
@@ -42,3 +43,18 @@ const bool DEBUG = true;		//Print all cout and cerr statements if true
 //window appearances
 const int FACE_SIZE = 100;	//Length of each square tile of a cropped-and-scaled face
 const int MAX_FACES_PER_ROW = 3; //how many normalized faces to show per row before wrapping down to next row
+
+//Haar cascades
+CascadeClassifier faceCascade;	//Haar cascade classifier for face
+CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
+CascadeClassifier profileCascade;	//Haar cascade classfier for profile face
+
+//Webcam
+VideoCapture capture(0); //0 for default camera
+
+//file stuff
+string courseCode;	//Name of course
+
+
+using namespace cv;
+using namespace std;

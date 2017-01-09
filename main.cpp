@@ -11,14 +11,7 @@ Detect face when tilted
 
 #include "main.h"
 
-using namespace cv;
-using namespace std;
-
 int main(int argc, char** argv) {
-	//---Haar cascades---//
-	CascadeClassifier faceCascade;	//Haar cascade classifier for face
-	CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
-	CascadeClassifier profileCascade;	//Haar cascade classfier for profile face
 
 	if (!faceCascade.load(FACE_CASCADE_LOCATION)) {
 		cerr << "ERROR: cannot load " << FACE_CASCADE_LOCATION;
@@ -34,7 +27,6 @@ int main(int argc, char** argv) {
 	}
 
 	//---Webcam---//
-	VideoCapture capture(0); //0 for default camera
 	if (!capture.isOpened()) {
 		cerr << "ERROR: Cannot initialise camera";
 		exit(200);
@@ -42,7 +34,6 @@ int main(int argc, char** argv) {
 	capture.set(CV_CAP_PROP_BUFFERSIZE, 1); //Set how many frames the buffer will store
 
 	//---Course---//	
-	string courseCode;	//Name of course
 	if (PRINTCSV) {
 		cout << "What is the course code? ";
 		cin >> courseCode;
