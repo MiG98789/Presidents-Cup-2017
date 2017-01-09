@@ -14,15 +14,9 @@
 #include <algorithm>
 #include <vector>
 
-//---OpenCV header files---//
-#include <opencv\cv.h>
-#include <opencv\highgui.h>
-#include <opencv2\objdetect\objdetect.hpp>
-#include <opencv2\highgui\highgui.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
 
 //---Custom header files---//
-
+#include "overviewWindow.h"
 
 //---Global constant variables---//
 //Buttons
@@ -43,18 +37,3 @@ const bool DEBUG = true;		//Print all cout and cerr statements if true
 //window appearances
 const int FACE_SIZE = 100;	//Length of each square tile of a cropped-and-scaled face
 const int MAX_FACES_PER_ROW = 3; //how many normalized faces to show per row before wrapping down to next row
-
-//Haar cascades
-CascadeClassifier faceCascade;	//Haar cascade classifier for face
-CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
-CascadeClassifier profileCascade;	//Haar cascade classfier for profile face
-
-//Webcam
-VideoCapture capture(0); //0 for default camera
-
-//file stuff
-string courseCode;	//Name of course
-
-
-using namespace cv;
-using namespace std;

@@ -11,6 +11,15 @@ Detect face when tilted
 
 #include "main.h"
 
+//Haar cascades
+CascadeClassifier faceCascade;	//Haar cascade classifier for face
+CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
+CascadeClassifier profileCascade;	//Haar cascade classfier for profile face
+
+VideoCapture capture(0); //0 for default camera
+
+string courseCode;	//Name of course
+
 int main(int argc, char** argv) {
 
 	if (!faceCascade.load(FACE_CASCADE_LOCATION)) {
@@ -91,9 +100,18 @@ int main(int argc, char** argv) {
 	vector<Rect> eyes;	//Contain output of eye detector
 	vector<Rect> profiles;
 
+
+	//testing the graph stuff
+	overviewWindow::getInstance().initialize();
+	overviewWindow::getInstance().addText("this is some text", 20, 30);
+	overviewWindow::getInstance().addLine(0, 0, 200, 200, 2, Scalar(0, 0, 100));
+	overviewWindow::getInstance().addCircle(200, 300, 50, 3, Scalar(0, 255, 0));
+	overviewWindow::getInstance().addRectangle(250, 10, 350, 20, 2);
+
 	//Start the window thread
 	startWindowThread();
 	namedWindow("windowNormalizedFaces");
+
 
 	while (true) {
 		if (waitKey(1) == ESC) //Press esc to exit
@@ -235,7 +253,6 @@ int main(int argc, char** argv) {
 			}
 
 			imshow("windowNormalizedFaces", frameAllNormalizedFaces);
-
 			imshow("Camera", frame);	//Output the processed image
 
 			timeElapsed = timeNow - timeStart;
