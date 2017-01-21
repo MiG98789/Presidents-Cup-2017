@@ -14,9 +14,9 @@
 #include <algorithm>
 #include <vector>
 
-
 //---Custom header files---//
 #include "overviewWindow.h"
+#include "FixedQueue.h"
 
 //---Global constant variables---//
 //Buttons
@@ -37,3 +37,5 @@ const bool DEBUG = true;		//Print all cout and cerr statements if true
 //window appearances
 const int FACE_SIZE = 100;	//Length of each square tile of a cropped-and-scaled face
 const int MAX_FACES_PER_ROW = 3; //how many normalized faces to show per row before wrapping down to next row
+const int CANVAS_HEIGHT = 750; //Canvas plot height
+const int CANVAS_WIDTH = 1500; //Canvas plot width

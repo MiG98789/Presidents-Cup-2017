@@ -100,18 +100,14 @@ int main(int argc, char** argv) {
 	vector<Rect> eyes;	//Contain output of eye detector
 	vector<Rect> profiles;
 
+	FixedQueue q_plot = FixedQueue(MAX_Q_SIZE);
 
 	//testing the graph stuff
-	overviewWindow::getInstance().initialize();
-	overviewWindow::getInstance().addText("text here. call clear() to reset shit", 20, 30);
-	overviewWindow::getInstance().addLine(0, 0, 200, 200, 2, Scalar(0, 0, 100));
-	overviewWindow::getInstance().addCircle(200, 300, 50, 3, Scalar(0, 255, 0));
-	overviewWindow::getInstance().addRectangle(250, 10, 350, 20, 2);
+	overviewWindow::getInstance().initialize(CANVAS_WIDTH, CANVAS_HEIGHT);
 
 	//Start the window thread
 	startWindowThread();
 	namedWindow("windowNormalizedFaces");
-
 
 	while (true) {
 		if (waitKey(1) == ESC) //Press esc to exit
@@ -133,6 +129,13 @@ int main(int argc, char** argv) {
 				Size(300, 300)
 			); //Detect faces, can also try CV_HAAR_SCALE_IMAGE | CV_HAAR_DO_CANNY_PRUNING
 
+			overviewWindow::getInstance().clear();
+			q_plot.enqueue(Point(0, static_cast<int>(faces.size() * 50)));
+			for (int i = 0; i < MAX_Q_SIZE; i++) {
+				overviewWindow::getInstance().addCircle(q_plot.get(i).x, CANVAS_HEIGHT - q_plot.get(i).y, 5, 1, 1);
+			}
+			q_plot.incrementXval(10);
+
 			if (DEBUG) {
 				cout << timeElapsed << "\tNumber of faces: " << faces.size() << endl;
 			}
@@ -153,7 +156,6 @@ int main(int argc, char** argv) {
 				Mat profileROI = frameGray(profiles[k]);
 				rectangle(frame, pt1, pt2, cvScalar(255, 0, ), 2, 8, 0);
 			}*/
-
 
 			//---Loop through each face---//
 			int numFaces = static_cast<int>(faces.size());
@@ -211,7 +213,6 @@ int main(int argc, char** argv) {
 					vconcat(frameAllNormalizedFaces, frameRowNormalizedFaces, frameAllNormalizedFaces);
 				}
 			}
-
 
 			for (int i = 0; i < faces.size(); i++) {
 

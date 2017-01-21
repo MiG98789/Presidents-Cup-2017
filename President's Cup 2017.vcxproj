@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\President%27s Cup 2017\Presidents-Cup-2017\FixedQueue.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="overviewWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\President%27s Cup 2017\Presidents-Cup-2017\FixedQueue.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="overviewWindow.h" />
   </ItemGroup>
