@@ -11,6 +11,32 @@ Detect face when tilted
 
 #include "main.h"
 
+vector<string> training_filenames;
+void load_training_data() {
+	DIR *pdir = NULL;
+	pdir = opendir("./training_data");
+
+	struct dirent * pent = NULL;
+
+	if (pdir == NULL) {
+		cerr << "couldn't load training data." << endl;
+		exit(-1);
+	}
+	training_filenames.clear();
+	while (pent = readdir(pdir)) {
+		if (pent == NULL) {
+			cerr << "pent couldn't be initialized properly" << endl;
+			exit(-1);
+		}
+		if (pent->d_name[0] == '.') 
+			continue;
+		
+		cout << "adding " << pent->d_name << " to the list of filenames for training" << endl;
+		training_filenames.push_back(pent->d_name);
+	}
+
+}
+
 //Haar cascades
 CascadeClassifier faceCascade;	//Haar cascade classifier for face
 CascadeClassifier eyeCascade;	//Haar cascade classifier for eyes
@@ -21,6 +47,7 @@ VideoCapture capture(0); //0 for default camera
 string courseCode;	//Name of course
 
 int main(int argc, char** argv) {
+	load_training_data();
 
 	if (!faceCascade.load(FACE_CASCADE_LOCATION)) {
 		cerr << "ERROR: cannot load " << FACE_CASCADE_LOCATION;

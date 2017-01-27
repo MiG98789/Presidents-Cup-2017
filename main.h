@@ -13,6 +13,7 @@
 #include <ctime>
 #include <algorithm>
 #include <vector>
+#include <dirent.h>
 
 //---Custom header files---//
 #include "overviewWindow.h"
@@ -39,3 +40,5 @@ const int FACE_SIZE = 100;	//Length of each square tile of a cropped-and-scaled 
 const int MAX_FACES_PER_ROW = 3; //how many normalized faces to show per row before wrapping down to next row
 const int CANVAS_HEIGHT = 750; //Canvas plot height
 const int CANVAS_WIDTH = 1500; //Canvas plot width
+
+
