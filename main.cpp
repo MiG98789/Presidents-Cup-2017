@@ -130,6 +130,8 @@ int main(int argc, char** argv) {
 	FixedQueue q_plot = FixedQueue(MAX_Q_SIZE);
 	int arr_plot[MAX_ARR_SIZE];
 	int arr_index = 0;
+	int max_x = 1;
+	int max_y = 1;
 
 	//testing the graph stuff
 	overviewWindow::getInstance().initialize(CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -182,9 +184,27 @@ int main(int argc, char** argv) {
 			}
 			*/
 
-			arr_plot[arr_index] = static_cast<int>(faces.size());
-			overviewWindow::getInstance().addCircle(arr_index, CANVAS_HEIGHT - arr_plot[arr_index], 5, 1, 1);
-			arr_index++;
+			if (arr_index < MAX_ARR_SIZE) {
+				overviewWindow::getInstance().clear();
+				arr_plot[arr_index] = static_cast<int>(faces.size());
+
+				if (max_y < arr_plot[arr_index]) {
+					max_y = arr_plot[arr_index];
+				}
+
+				for (int i = 0; i < arr_index; i++) {
+					overviewWindow::getInstance().addCircle(i * 10, (int)(0.9 * (50 + CANVAS_HEIGHT - (double)arr_plot[i] / (double)max_y * CANVAS_HEIGHT)), 5, 1, 1);
+					if (i != 0) {
+						overviewWindow::getInstance().addLine((i - 1) * 10, (int)(0.9 * (50 + CANVAS_HEIGHT - (double)arr_plot[i - 1] / (double)max_y * CANVAS_HEIGHT)),
+																i * 10, (int)(0.9 * (50 + CANVAS_HEIGHT - (double)arr_plot[i] / (double)max_y * CANVAS_HEIGHT)));
+					}
+				}
+
+				if (arr_index != 0) {
+					//overviewWindow::getInstance().addLine((arr_index - 1) * 50, arr_plot[arr_index - 1], arr_index * 50, arr_plot[arr_index]);
+				}
+				arr_index++;
+			}
 
 			/* //detect profiles (when face is turned to side)
 			profileCascade.detectMultiScale(
