@@ -128,6 +128,8 @@ int main(int argc, char** argv) {
 	vector<Rect> profiles;
 
 	FixedQueue q_plot = FixedQueue(MAX_Q_SIZE);
+	int arr_plot[MAX_ARR_SIZE];
+	int arr_index = 0;
 
 	//testing the graph stuff
 	overviewWindow::getInstance().initialize(CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -142,20 +144,32 @@ int main(int argc, char** argv) {
 
 		timerDuration = (clock() - timerPrev) / (double)CLOCKS_PER_SEC;
 
-		if (timerDuration > TIMER_INTERVAL) {
-			capture >> frame;	//Capture frame
-			cvtColor(frame, frameGray, CV_BGR2GRAY);	//Convert frame from BGR to gray for easier processing
-			equalizeHist(frameGray, frameGray);	//Normalize brightness and increase contrast: src,dest
-			faceCascade.detectMultiScale(
-				frameGray,
-				faces,
-				1.2,
-				10,
-				0 | CV_HAAR_SCALE_IMAGE,
-				Size(0, 0),
-				Size(300, 300)
+		capture >> frame;	//Capture frame
+		cvtColor(frame, frameGray, CV_BGR2GRAY);	//Convert frame from BGR to gray for easier processing
+		equalizeHist(frameGray, frameGray);	//Normalize brightness and increase contrast: src,dest
+		faceCascade.detectMultiScale(
+			frameGray,
+			faces,
+			1.2,
+			10,
+			0 | CV_HAAR_SCALE_IMAGE,
+			Size(0, 0),
+			Size(300, 300)
 			); //Detect faces, can also try CV_HAAR_SCALE_IMAGE | CV_HAAR_DO_CANNY_PRUNING
 
+		for (int i = 0; i < faces.size(); i++) {
+			//---Detect size of each face---//
+			Point pt1(faces[i].x + faces[i].width, faces[i].y + faces[i].height);	//Find first point of the face
+			Point pt2(faces[i].x, faces[i].y);	//Find point opposite to pt1
+
+				//---Draw rectangles around each face---//
+				rectangle(frame, pt1, pt2, Scalar(0, 255, 0), 2, 8, 0);
+			}
+
+		imshow("Camera", frame);	//Output the processed image
+
+		if (timerDuration > TIMER_INTERVAL) {
+			/*
 			overviewWindow::getInstance().clear();
 			q_plot.enqueue(Point(0, static_cast<int>(faces.size() * 50)));
 			for (int i = 0; i < MAX_Q_SIZE; i++) {
@@ -166,6 +180,11 @@ int main(int argc, char** argv) {
 			if (DEBUG) {
 				cout << timeElapsed << "\tNumber of faces: " << faces.size() << endl;
 			}
+			*/
+
+			arr_plot[arr_index] = static_cast<int>(faces.size());
+			overviewWindow::getInstance().addCircle(arr_index, CANVAS_HEIGHT - arr_plot[arr_index], 5, 1, 1);
+			arr_index++;
 
 			/* //detect profiles (when face is turned to side)
 			profileCascade.detectMultiScale(
@@ -274,14 +293,9 @@ int main(int argc, char** argv) {
 				   hconcat(frameNormalizedFaces, faceROI, frameNormalizedFaces); //horizontally concatenate the face into frame
 			   }
 			   */
-
-			   //---Draw rectangles around each face---//
-				rectangle(frame, pt1, pt2, Scalar(0, 255, 0), 2, 8, 0);
-
 			}
 
 			imshow("windowNormalizedFaces", frameAllNormalizedFaces);
-			imshow("Camera", frame);	//Output the processed image
 
 			timeElapsed = timeNow - timeStart;
 
