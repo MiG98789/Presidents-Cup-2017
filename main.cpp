@@ -135,7 +135,7 @@ int main(int argc, char** argv) {
 
 	//testing the graph stuff
 	overviewWindow::getInstance().initialize(CANVAS_WIDTH, CANVAS_HEIGHT);
-
+	
 	//Start the window thread
 	startWindowThread();
 	namedWindow("windowNormalizedFaces");
@@ -186,6 +186,10 @@ int main(int argc, char** argv) {
 
 			if (arr_index < MAX_ARR_SIZE) {
 				overviewWindow::getInstance().clear();
+				overviewWindow::getInstance().addLine(0, CANVAS_HEIGHT - 50, CANVAS_WIDTH, CANVAS_HEIGHT - 50); //x-axis
+				overviewWindow::getInstance().addLine(50, 0, 50, CANVAS_HEIGHT); //y-axis
+				overviewWindow::getInstance().addText("0", 15, CANVAS_HEIGHT - 15);
+
 				arr_plot[arr_index] = static_cast<int>(faces.size());
 
 				if (max_y < arr_plot[arr_index]) {
@@ -193,10 +197,10 @@ int main(int argc, char** argv) {
 				}
 
 				for (int i = 0; i < arr_index; i++) {
-					overviewWindow::getInstance().addCircle(i * 10, (int)(0.9 * (50 + CANVAS_HEIGHT - (double)arr_plot[i] / (double)max_y * CANVAS_HEIGHT)), 5, 1, 1);
+					overviewWindow::getInstance().addCircle(60 + i * 10,(int)(0.9 * (27 + CANVAS_HEIGHT - (double)arr_plot[i] / (double)max_y * CANVAS_HEIGHT)), 5, 1, 1);
 					if (i != 0) {
-						overviewWindow::getInstance().addLine((i - 1) * 10, (int)(0.9 * (50 + CANVAS_HEIGHT - (double)arr_plot[i - 1] / (double)max_y * CANVAS_HEIGHT)),
-																i * 10, (int)(0.9 * (50 + CANVAS_HEIGHT - (double)arr_plot[i] / (double)max_y * CANVAS_HEIGHT)));
+						overviewWindow::getInstance().addLine(60 + (i - 1) * 10, (int)(0.9 * (27 + CANVAS_HEIGHT - (double)arr_plot[i - 1] / (double)max_y * CANVAS_HEIGHT)),
+																60 + i * 10, (int)(0.9 * (27 + CANVAS_HEIGHT - (double)arr_plot[i] / (double)max_y * CANVAS_HEIGHT)));
 					}
 				}
 
