@@ -3,7 +3,7 @@ window.onload = function() {
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     var count = document.getElementById('count');
-    var numOfFaces = 0;
+    var numOfFaces = [0];
     count.value = 0;
 
     var tracker = new tracking.ObjectTracker('face');
@@ -14,11 +14,12 @@ window.onload = function() {
 
     tracker.on('track', function(event) {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        numOfFaces = 0;
+        numOfFaces[0] = 0;
+        count.value = 0;
 
         event.data.forEach(function(rect) {
-            numOfFaces += 1;
-            count.value = numOfFaces;
+            numOfFaces[0] += 1;
+            count.value = numOfFaces[0];
 
             context.strokeStyle = '#a64ceb';
             context.strokeRect(rect.x, rect.y, rect.width, rect.height);
