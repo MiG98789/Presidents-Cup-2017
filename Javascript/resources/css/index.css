@@ -1,0 +1,29 @@
+video, canvas {
+    margin-left: 25%;
+    margin-top: 50px;
+    position: absolute;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+.container-fluid {
+    height: 100%;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.row-first {
+    height: 50%;
+    overflow: hidden;
+}

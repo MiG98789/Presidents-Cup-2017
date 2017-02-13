@@ -12,7 +12,7 @@ Detect face when tilted
 #include "main.h"
 
 vector<string> training_filenames;
-void load_training_data() {
+void load_training_directory() {
 	DIR *pdir = NULL;
 	pdir = opendir("./training_data");
 
@@ -47,7 +47,7 @@ VideoCapture capture(0); //0 for default camera
 string courseCode;	//Name of course
 
 int main(int argc, char** argv) {
-	load_training_data();
+	load_training_directory();
 
 	if (!faceCascade.load(FACE_CASCADE_LOCATION)) {
 		cerr << "ERROR: cannot load " << FACE_CASCADE_LOCATION;
