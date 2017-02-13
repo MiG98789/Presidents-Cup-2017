@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>President's Cup 2017</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="vendors/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="resources/css/index.css">
+
+    <!-- Custom script -->
+    <script src="resources/js/index.js"></script>
+
+    <!-- tracking.js -->
+    <script src="vendors/tracking.js/tracking-min.js"></script>
+    <script src="vendors/tracking.js/data/face-min.js"></script>
+    <script src="vendors/tracking.js/stats.min.js"></script>
+
+    <!-- dat.gui -->
+    <script src="vendors/dat.gui/dat.gui.min.js"></script>
+
+    <!-- Bootstrap setup -->
+    <script src="vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="vendors/jquery/jquery.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="count">Count:</label>
+                    <textarea class="form-control" id="count"></textarea>
+                </div>
+            </div>
+
+            <div class="col-sm-8">
+                <video id="video" width="320" height="240" preload autoplay loop muted></video>
+                <canvas id="canvas" width="320" height="240"></canvas>
+            </div>
+
+            <div class="col-sm-2">
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
