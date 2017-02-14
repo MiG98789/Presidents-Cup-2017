@@ -1,9 +1,12 @@
 video, canvas {
     margin-left: 25%;
     margin-top: 50px;
+    width: 640px;
+    height: 480px;
     position: absolute;
 }
 
+/* Bootstrap formatting */
 html {
     height: 100%;
 }
@@ -14,16 +17,26 @@ body {
 
 .container-fluid {
     height: 100%;
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .row {
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: 0;
+    margin-right: 0;
 }
 
-.row-first {
-    height: 50%;
+.row-video {
+    height: 500px;
     overflow: hidden;
+}
+
+/* D3.js formatting */
+.chart div {
+    font: 10px sans-serif;
+    background-color: steelblue;
+    text-align: right;
+    padding: 3px;
+    margin: 1px;
+    color: white;
 }
