@@ -1,8 +1,6 @@
 video, canvas {
     margin-left: 25%;
     margin-top: 50px;
-    width: 640px;
-    height: 480px;
     position: absolute;
 }
 
