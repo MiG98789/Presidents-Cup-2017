@@ -53,8 +53,8 @@ window.onload = function() {
         .style("opacity", 0);
 
     // Don't want dots overlapping axis, so add in buffer to data domain
-    xScale.domain([0, 1]);
-    yScale.domain([0, 1]);
+    xScale.domain([0, 10]);
+    yScale.domain([0, 10]);
 
     // x-axis
     svg.append("g")
