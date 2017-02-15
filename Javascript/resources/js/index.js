@@ -2,8 +2,6 @@ window.onload = function() {
     var video = document.getElementById('video');
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
-    var count = document.getElementById('count');
-    count.value = 0;
     var currFaceCount = [0];
     var totalFaceCount = [];
     var countIndex = 0;
@@ -22,12 +20,10 @@ window.onload = function() {
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
-    var dots = d3.select(".plot");
-
     // Set up x
     var xValue = function() { return countIndex;},
         xScale = d3.scaleLinear().range([0, width]),
-        xMap = function(d) { return xScale(xValue(d));},
+        xMap = function() { return xScale(xValue());},
         xAxis = d3.axisBottom().scale(xScale);
 
     // Set up y
@@ -41,20 +37,15 @@ window.onload = function() {
         color = d3.scaleOrdinal(d3.schemeCategory10);
 
     // Add the graph canvas to the body of the webpage
-    var svg = dots.append("svg")
+    var svg = d3.select(".plot").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // add the tooltip area to the webpage
-    var tooltip = dots.append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
-
     // Don't want dots overlapping axis, so add in buffer to data domain
-    xScale.domain([0, 10]);
-    yScale.domain([0, 10]);
+    xScale.domain([0, 450]);
+    yScale.domain([0, 100]);
 
     // x-axis
     svg.append("g")
@@ -65,7 +56,7 @@ window.onload = function() {
         .attr("class", "label")
         .attr("x", width)
         .attr("y", -6)
-        .style("text-anchor", "end")
+        .attr("text-anchor", "end")
         .text("Time");
 
     // y-axis
@@ -76,9 +67,19 @@ window.onload = function() {
         .attr("class", "label")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
+        .attr("dy", ".75em")
+        .attr("text-anchor", "end")
         .text("Number of Faces");
+
+    // Draw dots
+    svg.selectAll(".dot")
+        .data(totalFaceCount)
+        .enter().append("circle")
+        .attr("class", "dot")
+        .attr("r", 3.5)
+        .attr("cx", xMap)
+        .attr("cy", yMap)
+        .style("fill", function(d) { return color(cValue(d));});
 
     // Set up face tracker
     var tracker = new tracking.ObjectTracker('face');
@@ -91,29 +92,11 @@ window.onload = function() {
     tracker.on('track', function(event) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         currFaceCount[0] = 0;
-        count.value = 0;
         bars.style("width", function (d) {return d*50 + "px";})
             .text(function (d) {return d;});
 
         event.data.forEach(function(rect) { // Loop through each detected face
             currFaceCount[0] += 1;
-            count.value = currFaceCount[0];
-
-            bars = d3.select(".chart")
-                .selectAll("div")
-                .attr("id", "chart")
-                .data(currFaceCount);
-
-            // Enter selection
-            bars.enter().append("div");
-
-            // Update selection
-            bars
-                .style("width", function (d) {return d*50 + "px";})
-                .text(function (d) {return d;});
-
-            // Exit selection
-            bars.exit().remove();
 
             // Draw a rectangle around the detected face
             context.strokeStyle = '#a64ceb';
@@ -124,7 +107,35 @@ window.onload = function() {
             context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
         });
 
+        bars = d3.select(".chart")
+            .selectAll("div")
+            .attr("id", "chart")
+            .data(currFaceCount);
+
+        // Enter selection
+        bars.enter().append("div");
+
+        // Update selection
+        bars
+            .style("width", function (d) {return d*50 + "px";})
+            .text(function (d) {return d;});
+
+        // Exit selection
+        bars.exit().remove();
+
+        // Update dot plot
+        svg.selectAll(".dot")
+            .data(totalFaceCount)
+            .enter().append("circle")
+            .attr("class", "dot")
+            .attr("r", 3.5)
+            .attr("cx", xMap)
+            .attr("cy", yMap)
+            .style("fill", function(d) { return color(cValue(d));});
+
         totalFaceCount.push(currFaceCount[0]);
+        console.log(totalFaceCount[countIndex]);
+        countIndex++;
     });
 
     /*
