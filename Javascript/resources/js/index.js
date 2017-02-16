@@ -29,7 +29,7 @@ window.onload = function() {
         yAxis = d3.axisLeft().scale(yScale);
 
     // setup fill color
-    var cValue = function(d) { return d[countIndex];},
+    var cValue = function(d) { return d;},
         color = d3.scaleOrdinal(d3.schemeCategory10);
 
     // Add the graph canvas to the body of the webpage
@@ -122,7 +122,9 @@ window.onload = function() {
             .data(totalFaceCount)
             .each(function(d, i) {
                 if(i != countIndex - 1) {
-                    d3.select(this).attr("cy", yScale(d));
+                    d3.select(this)
+                        .attr("cy", yScale(d))
+                        .style("fill", function(d) { return color(cValue(yScale(d))) });
                 }
             });
 
@@ -134,8 +136,7 @@ window.onload = function() {
             .attr("r", 3.5)
             .attr("cx", xScale(countIndex))
             .attr("cy", yScale(totalFaceCount[countIndex]))
-            .style("fill", function(d) { return color(cValue(d));});
-
+            .style("fill", function(d) { return color(cValue(yScale(d)));});
 
         countIndex++;
     });
