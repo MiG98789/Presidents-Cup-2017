@@ -21,15 +21,11 @@ window.onload = function() {
         height = 500 - margin.top - margin.bottom;
 
     // Set up x
-    var xValue = function() { return countIndex;},
-        xScale = d3.scaleLinear().range([0, width]),
-        xMap = function() { return xScale(xValue());},
+    var xScale = d3.scaleLinear().range([0, width]),
         xAxis = d3.axisBottom().scale(xScale);
 
     // Set up y
-    var yValue = function(d) { return d[countIndex];},
-        yScale = d3.scaleLinear().range([height, 0]),
-        yMap = function(d) { return yScale(yValue(d));},
+    var yScale = d3.scaleLinear().range([height, 0]),
         yAxis = d3.axisLeft().scale(yScale);
 
     // setup fill color
@@ -71,16 +67,6 @@ window.onload = function() {
         .attr("text-anchor", "end")
         .text("Number of Faces");
 
-    // Draw dots
-    svg.selectAll(".dot")
-        .data(totalFaceCount)
-        .enter().append("circle")
-        .attr("class", "dot")
-        .attr("r", 3.5)
-        .attr("cx", xMap)
-        .attr("cy", yMap)
-        .style("fill", function(d) { return color(cValue(d));});
-
     // Set up face tracker
     var tracker = new tracking.ObjectTracker('face');
     tracker.setInitialScale(1);
@@ -107,6 +93,8 @@ window.onload = function() {
             context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
         });
 
+        totalFaceCount.push(currFaceCount[0]);
+
         bars = d3.select(".chart")
             .selectAll("div")
             .attr("id", "chart")
@@ -129,12 +117,10 @@ window.onload = function() {
             .enter().append("circle")
             .attr("class", "dot")
             .attr("r", 3.5)
-            .attr("cx", xMap)
-            .attr("cy", yMap)
+            .attr("cx", xScale(countIndex))
+            .attr("cy", yScale(totalFaceCount[countIndex]))
             .style("fill", function(d) { return color(cValue(d));});
 
-        totalFaceCount.push(currFaceCount[0]);
-        console.log(totalFaceCount[countIndex]);
         countIndex++;
     });
 
