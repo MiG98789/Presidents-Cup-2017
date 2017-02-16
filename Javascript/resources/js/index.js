@@ -40,8 +40,8 @@ window.onload = function() {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Don't want dots overlapping axis, so add in buffer to data domain
-    xScale.domain([-1, 450]);
-    yScale.domain([-1, 10]);
+    xScale.domain([0, 450]);
+    yScale.domain([0, 1]);
 
     // x-axis
     svg.append("g")
@@ -111,12 +111,20 @@ window.onload = function() {
         // Exit selection
         bars.exit().remove();
 
-        // Don't want dots overlapping axis, so add in buffer to data domain
-        xScale.domain([-1, 450]);
-        yScale.domain([d3.min(totalFaceCount)-1, d3.max(totalFaceCount)]);
+        // Update axes dynamically
+        xScale.domain([0, 450]);
+        yScale.domain([0, d3.max(totalFaceCount)]);
 
-        svg.selectAll("g.y.axis").call(yAxis);
         svg.selectAll("g.x.axis").call(xAxis);
+        svg.selectAll("g.y.axis").call(yAxis);
+
+        svg.selectAll(".dot")
+            .data(totalFaceCount)
+            .each(function(d, i) {
+                if(i != countIndex - 1) {
+                    d3.select(this).attr("cy", yScale(d));
+                }
+            });
 
         // Update dot plot
         svg.selectAll(".dot")
@@ -127,6 +135,7 @@ window.onload = function() {
             .attr("cx", xScale(countIndex))
             .attr("cy", yScale(totalFaceCount[countIndex]))
             .style("fill", function(d) { return color(cValue(d));});
+
 
         countIndex++;
     });
